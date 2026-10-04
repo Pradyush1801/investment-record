@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext';
+import AiInvestmentDecisionModel from '../components/ai-investment-decision-model';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -10,7 +11,7 @@ export default function Dashboard() {
       </div>
       <div className="card">
         <p className="text-muted">
-          Your decision intelligence workspace. Drop your existing scoring components here.
+          <AiInvestmentDecisionModel />
         </p>
         {user?.role === 'admin' && (
           <div className="alert alert-info" style={{ marginTop: 20 }}>

@@ -1,7 +1,7 @@
 # Decision Intelligence Platform — Auth + Invite App
 
 A minimal full-stack React + Node.js app with:
-- **MongoDB** user storage
+- **Postgres (Supabase)** user storage
 - **JWT** authentication (login / logout)
 - **Invite-only registration** — admin sends a link, user registers themselves
 - **Password reset** via email link
@@ -13,7 +13,7 @@ A minimal full-stack React + Node.js app with:
 
 ```
 app/
-  backend/      Express + Mongoose API
+  backend/      Express + Postgres (pg) API
   frontend/     React + Vite SPA
   README.md
 ```
@@ -25,7 +25,7 @@ app/
 | Tool | Version |
 |------|---------|
 | Node.js | 18+ |
-| MongoDB | Local (mongod) or Atlas URI |
+| Postgres | Supabase project (free tier) |
 
 ---
 
@@ -37,11 +37,20 @@ npm install
 cp .env.example .env
 ```
 
+### Create the database (Supabase)
+
+1. Create a free project at supabase.com.
+2. **SQL Editor → New query** → paste the contents of `backend/schema.sql` → **Run**.
+3. **Connect** (top bar) → copy the **Session pooler** connection string into `DATABASE_URL`
+   and replace `[YOUR-PASSWORD]` with your database password.
+
 Edit `.env`:
 
+## node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
 ```env
-MONGODB_URI=mongodb://localhost:27017/di_platform
-JWT_SECRET=generate_a_64_char_random_string_here
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres
+JWT_SECRET=generate_a_64_char_random_string_here 
 FRONTEND_URL=http://localhost:5173
 
 # Email (optional in dev — emails print to console without these)
@@ -159,7 +168,8 @@ Copy the invite/reset link from the console output.
 
 ## Production checklist
 
-- [ ] Set `MONGODB_URI` to MongoDB Atlas connection string
+- [ ] Set `DATABASE_URL` to the Supabase session pooler connection string
+- [ ] Ping `/health` at least weekly (e.g. cron-job.org) so the free Supabase project isn't paused
 - [ ] Set `JWT_SECRET` to a random 64+ character string
 - [ ] Set `FRONTEND_URL` to your deployed frontend domain
 - [ ] Configure SMTP (SendGrid, Postmark, or Gmail app password)
